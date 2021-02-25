@@ -1,5 +1,8 @@
 package me.apon.customplugin
 
+import com.android.build.gradle.AppExtension
+import com.android.build.gradle.BaseExtension
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import java.io.File
@@ -10,15 +13,26 @@ import java.util.*
  * Created by yaopeng(https://github.com/apon) on 2021/2/25.
  */
 class MyFirstPlugin:Plugin<Project>{
-    override fun apply(p0: Project) {
+    override fun apply(project: Project) {
+        //定义参数 在build.gradle设置参数 MyPluginParams{ name = "" }
+        project.extensions.create("MyPluginParams",MyPluginParams::class.java)
+        //获取参数
+        var name = project.extensions.findByType(MyPluginParams::class.java)?.name
         //创建task生成文件
-        p0.tasks.create("MyFirstPlugin"){
+        project.tasks.create("MyFirstPlugin"){
             it.group = "MyPluginTasks"
             it.doLast {
-                File("${p0.projectDir.path}/myFirstGeneratedFile.txt").apply {
-                    writeText("Hello World!\nPrinted at: ${SimpleDateFormat("HH:mm:ss").format(Date())}")
+                File("${project.projectDir.path}/myFirstGeneratedFile.txt").apply {
+                    writeText("Hello $name!\nPrinted at: ${SimpleDateFormat("HH:mm:ss").format(Date())}")
                 }
             }
+        }
+        //将MyFirstPlugin添加到构建树
+        val android = project.extensions.findByType(BaseExtension::class.java)
+        (android as  AppExtension).applicationVariants.all {
+            //将MyFirstPlugin task添加到assemble task前
+            //assemble依赖MyFirstPlugin的意思是说assemble运行前先运行MyFirstPlugin
+            it.assembleProvider.dependsOn("MyFirstPlugin")
         }
     }
 }
