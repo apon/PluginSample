@@ -1,0 +1,51 @@
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'kotlin'
+apply plugin: 'maven'
+buildscript {
+    ext.kotlin_version = '1.3.31'
+    ext.gradle_version = '3.5.3'
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.android.tools.build:gradle:$gradle_version"
+    }
+}
+
+repositories {
+    google()
+    jcenter()
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    // Android gradle plugin will allow us to access Android specific features
+    implementation "com.android.tools.build:gradle:$gradle_version"
+}
+
+gradlePlugin {
+    plugins {
+        create("MyFirstPlugin") {
+            //插件id,用于引用插件,如：apply plugin: 'id'
+            id = "me.apon.MyFirstPlugin"
+            //指定插件的实现类
+            implementationClass = "me.apon.customplugin.MyFirstPlugin"
+        }
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //引用路径为：'me.apon:MyFirstPlugin:1.0.0'
+            pom.groupId = 'me.apon'
+            pom.artifactId = 'MyFirstPlugin'
+            pom.version = '1.0.0'
+            //上传到本地
+            repository(url: uri('../repo'))
+        }
+    }
+}
