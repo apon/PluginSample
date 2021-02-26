@@ -19,13 +19,23 @@ class MyFirstPlugin:Plugin<Project>{
         //获取参数
         var name = project.extensions.findByType(MyPluginParams::class.java)?.name
         //创建task生成文件
+        /*
         project.tasks.create("MyFirstPlugin"){
             it.group = "MyPluginTasks"
             it.doLast {
+                //迁移至MyFirstTask
                 File("${project.projectDir.path}/myFirstGeneratedFile.txt").apply {
                     writeText("Hello $name!\nPrinted at: ${SimpleDateFormat("HH:mm:ss").format(Date())}")
                 }
             }
+        }*/
+        //注册MyFirstTask
+        project.tasks.register("MyFirstPlugin", MyFirstTask::class.java) {
+            it.group = "MyPluginTasks"
+            //设置输入
+            it.inputName = name
+            //设置输出
+            it.file = File("${project.projectDir.path}/myFirstGeneratedFile.txt")
         }
         //将MyFirstPlugin添加到构建树
         val android = project.extensions.findByType(BaseExtension::class.java)
