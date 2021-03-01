@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'me.apon.MyFirstPlugin'
+//apply plugin: 'me.apon.MyFirstPlugin'
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -25,9 +25,9 @@ android {
 
 }
 
-MyPluginParams{
-    name = "apon"
-}
+//MyPluginParams{
+//    name = "apon"
+//}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
